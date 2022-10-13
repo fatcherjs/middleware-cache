@@ -1,0 +1,42 @@
+{
+	"name": "@fatcherjs/middleware-cache",
+	"version": "1.8.0",
+	"main": "dist/cache.js",
+	"module": "dist/cache.esm.js",
+	"browser": "dist/cache.min.js",
+	"typings": "dist/cache.d.ts",
+	"scripts": {
+		"dev": "rimraf dist && rollup -c rollup.config.ts -w",
+		"build": "rimraf dist && rollup -c rollup.config.ts",
+		"deploy": "pnpm run build && pnpm publish --no-git-check",
+		"eslint": "eslint .",
+		"tsc": "tsc --noEmit",
+		"ci": "npm run eslint && npm run tsc && npm run build"
+	},
+	"description": "A Middleware for caching response",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://github.com/fatcherjs/fatcher/tree/master/packages/cache",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fatcherjs/fatcher.git"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@fansy/eslint-config": "^1.1.0",
+		"@fansy/prettier-config": "^1.0.0",
+		"@rollup/plugin-node-resolve": "^15.0.0",
+		"@types/node": "^18.8.5",
+		"esbuild": "^0.15.10",
+		"fatcher": "^1.8.0",
+		"rimraf": "^3.0.2",
+		"rollup": "^2.79.1",
+		"rollup-plugin-dts": "^4.2.3",
+		"rollup-plugin-esbuild": "^4.10.1",
+		"typescript": "^4.8.4"
+	},
+	"peerDependencies": {
+		"fatcher": "^1.8.0"
+	}
+}
