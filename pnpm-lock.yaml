@@ -6,7 +6,7 @@ specifiers:
   '@rollup/plugin-node-resolve': ^15.0.0
   '@types/node': ^18.8.5
   esbuild: ^0.15.10
-  fatcher: ^1.8.0
+  fatcher: ^2.0.0
   rimraf: ^3.0.2
   rollup: ^2.79.1
   rollup-plugin-dts: ^4.2.3
@@ -19,7 +19,7 @@ devDependencies:
   '@rollup/plugin-node-resolve': 15.0.0_rollup@2.79.1
   '@types/node': 18.8.5
   esbuild: 0.15.10
-  fatcher: 1.8.0
+  fatcher: 2.0.0
   rimraf: 3.0.2
   rollup: 2.79.1
   rollup-plugin-dts: 4.2.3_gypgyaqhine6mwjfvh7icfhviq
@@ -112,8 +112,8 @@ packages:
       prettier: 2.7.1
     dev: true
 
-  /@fatcherjs/utils-shared/1.8.0:
-    resolution: {integrity: sha512-3pdZluAl8u1bzqBw+xUXV3ME7BOUFmyOStCd/H3L/SC9a+sGAzZ3VW0Tmi8GGqAvLDeF6jg0JoVfJ15xSQXYMg==}
+  /@fatcherjs/utils-shared/2.0.0:
+    resolution: {integrity: sha512-wFjuJn88GVK+2hL+wMuxW/s1uB/GbOlYKONmG/bFEDDuISV22fSvtLOuxhCbnQAKvmNBBoW/lqno5tl2K2calA==}
     dev: true
 
   /@humanwhocodes/config-array/0.5.0:
@@ -887,11 +887,11 @@ packages:
       reusify: 1.0.4
     dev: true
 
-  /fatcher/1.8.0:
-    resolution: {integrity: sha512-sXtM+awcJXqLf65cis/mVsuAUO5oQhU7wEfMc3CgrgSblClDzaf7Y2LQXzd/GRdHKd6hvZMwkncf2WUxOI2MHw==}
+  /fatcher/2.0.0:
+    resolution: {integrity: sha512-81OmkisYKCxcepgQpKiSWrHVy0ohnoSrC6O0EAu/wEXUZcFUX8Xs7RdX1/RFYEYGoNqjcyZjxtf0UyKm0p+YzQ==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@fatcherjs/utils-shared': 1.8.0
+      '@fatcherjs/utils-shared': 2.0.0
     dev: true
 
   /file-entry-cache/6.0.1:
