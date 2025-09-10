@@ -1,42 +1,45 @@
 {
-	"name": "@fatcherjs/middleware-cache",
-	"version": "2.0.0",
-	"main": "dist/cache.js",
-	"module": "dist/cache.esm.js",
-	"browser": "dist/cache.min.js",
-	"typings": "dist/cache.d.ts",
-	"scripts": {
-		"dev": "rimraf dist && rollup -c rollup.config.ts -w",
-		"build": "rimraf dist && rollup -c rollup.config.ts",
-		"deploy": "pnpm run build && pnpm publish --no-git-check",
-		"eslint": "eslint .",
-		"tsc": "tsc --noEmit",
-		"ci": "npm run eslint && npm run tsc && npm run build"
-	},
-	"description": "A Middleware for caching response",
-	"files": [
-		"dist"
-	],
-	"homepage": "https://github.com/fatcherjs/fatcher/tree/master/packages/cache",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/fatcherjs/fatcher.git"
-	},
-	"license": "MIT",
-	"devDependencies": {
-		"@fansy/eslint-config": "^1.1.0",
-		"@fansy/prettier-config": "^1.0.0",
-		"@rollup/plugin-node-resolve": "^15.0.0",
-		"@types/node": "^18.8.5",
-		"esbuild": "^0.15.10",
-		"fatcher": "^2.0.0",
-		"rimraf": "^3.0.2",
-		"rollup": "^2.79.1",
-		"rollup-plugin-dts": "^4.2.3",
-		"rollup-plugin-esbuild": "^4.10.1",
-		"typescript": "^4.8.4"
-	},
-	"peerDependencies": {
-		"fatcher": "^2.0.0"
-	}
+  "name": "@fatcherjs/middleware-cache",
+  "version": "3.0.0-alpha-11",
+  "homepage": "https://github.com/fatcherjs/middleware-cache",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatcherjs/middleware-cache.git"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.min.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage"
+  },
+  "peerDependencies": {
+    "fatcher": "^3.0.0-alpha-11"
+  },
+  "devDependencies": {
+    "@fansy/eslint-config": "^1.4.2",
+    "@fansy/prettier-config": "^1.1.0",
+    "@types/node": "^24.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
+    "@vitest/coverage-v8": "3.2.4",
+    "eslint": "^8.57.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "fatcher": "3.0.0-alpha-11",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "msw": "^2.11.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.4"
+  }
 }

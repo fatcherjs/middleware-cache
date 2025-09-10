@@ -1,56 +1,37 @@
-import { Middleware, canActivate, Context, MiddlewareResult, defineMiddleware } from 'fatcher';
-import { CacheOptions } from './interfaces';
+import { FatcherMiddleware } from 'fatcher';
 
-const cacheMap = new Map<string, MiddlewareResult>();
+const cacheMap = new Map<string, { expireTime: number; response: Response }>();
 
-const timer: Record<string, NodeJS.Timer> = {};
+export const cache: FatcherMiddleware = {
+  name: 'fatcher-middleware-cache',
+  use: async (context, next) => {
+    const { ttl = 0, flush } = context;
 
-function getClonedData(data: unknown) {
-    return canActivate(data) ? data.clone() : data;
-}
+    const method = context.request.method.toUpperCase();
 
-/**
- * A middleware for cache response result
- * @param options
- */
-export function cache(options: CacheOptions): Middleware {
-    const { validate = (context: Context) => context.method === 'GET', ttl = 60000, useCache = true } = options;
+    if (method !== 'GET') {
+      return next();
+    }
 
-    return defineMiddleware(async (context, next) => {
-        if (!useCache) {
-            return next();
-        }
+    const cacheKey = `${method} ${context.request.url}`;
 
-        const cacheKey = `${context.method} ${context.url}`;
+    const hitCache = cacheMap.get(cacheKey);
 
-        if (cacheMap.has(cacheKey)) {
-            const result = cacheMap.get(cacheKey) as MiddlewareResult;
+    if (hitCache && !flush) {
+      const isValid = hitCache.expireTime > Date.now();
+      if (isValid) {
+        return hitCache.response;
+      }
+      cacheMap.delete(cacheKey);
+    }
 
-            return {
-                ...result,
-                data: getClonedData(result.data),
-            };
-        }
+    const response = await next();
 
-        const result = await next();
+    if (ttl > 0) {
+      const expireTime = Date.now() + ttl;
+      cacheMap.set(cacheKey, { response: response.clone(), expireTime });
+    }
 
-        if (!validate(context) || ttl <= 0) {
-            return result;
-        }
-
-        // clone and save;
-        const clonedData = getClonedData(result.data);
-
-        cacheMap.set(cacheKey, {
-            ...result,
-            data: clonedData,
-        });
-
-        timer[cacheKey] = setTimeout(() => {
-            cacheMap.delete(cacheKey);
-            delete timer[cacheKey];
-        }, ttl);
-
-        return result;
-    }, 'fatcher-middleware-cache');
-}
+    return response;
+  },
+};

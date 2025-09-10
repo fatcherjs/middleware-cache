@@ -1,12 +1,8 @@
 # @fatcherjs/middleware-cache
 
-A middleware for caching response result.
-
-[![codecov](https://codecov.io/gh/fatcherjs/middleware-cache/branch/master/graph/badge.svg?token=TFKUGW6YNI)](https://codecov.io/gh/fatcherjs/middleware-cache)
+<a href="https://npmjs.com/package/@fatcherjs/middleware-cache"><img src="https://img.shields.io/npm/v/@fatcherjs/middleware-cache.svg" alt="npm package"></a>
 [![install size](https://packagephobia.com/badge?p=@fatcherjs/middleware-cache)](https://packagephobia.com/result?p=@fatcherjs/middleware-cache)
 <a href="https://unpkg.com/@fatcherjs/middleware-cache"><img alt="Size" src="https://img.badgesize.io/https://unpkg.com/@fatcherjs/middleware-cache"></a>
-<a href="https://npmjs.com/package/@fatcherjs/middleware-cache"><img src="https://img.shields.io/npm/v/@fatcherjs/middleware-cache.svg" alt="npm package"></a>
-<a href="https://github.com/fatcherjs/middleware-cache/actions/workflows/ci.yml"><img src="https://github.com/fatcherjs/middleware-cache/actions/workflows/ci.yml/badge.svg?branch=master" alt="build status"></a>
 
 ## Install
 
@@ -19,38 +15,34 @@ A middleware for caching response result.
 ### CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@fatcherjs/middleware-cache/dist/cache.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fatcherjs/middleware-cache/dist/index.min.js"></script>
 ```
 
 ## Usage
 
 ```ts
-import { cache } from '@fatcherjs/middleware-cache';
 import { fatcher } from 'fatcher';
+import { cache } from '@fatcherjs/middleware-cache';
 
-fatcher({
-    url: '/bar/foo',
-    middlewares: [cache({ ttl: 5 * 60 * 1000 })],
-    payload: {
-        bar: 'foo',
-    },
-})
-    .then(res => {
-        console.log(res);
-    })
-    .catch(err => {
-        console.error(error);
-    });
+fatcher('https://foo.bar', {
+  middlewares: [cache],
+});
 ```
 
 ## Options
 
-| Name     | Descriptions                           | Type                   | DefaultValue                          |
-| -------- | -------------------------------------- | ---------------------- | ------------------------------------- |
-| useCache | Whether use cache                      | `boolean`              | `true`                                |
-| ttl      | Time to live(ms)                       | `number`               | `60 * 1000`                           |
-| validate | Validate a request whether needs cache | `(Context) => boolean` | `context => context.method === 'GET'` |
+### ttl
+
+```ts
+import { fatcher } from 'fatcher';
+import { cache } from '@fatcherjs/middleware-cache';
+
+fatcher('https://foo.bar', {
+  ttl: 5 * 1000,
+  middlewares: [cache],
+});
+```
 
 ## License
 
-[LICENSE](https://github.com/fatcherjs/fatcher/blob/master/LICENSE)
+[MIT](https://github.com/fatcherjs/middleware-cache/blob/master/LICENSE)
