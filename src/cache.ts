@@ -1,37 +1,56 @@
 import { FatcherMiddleware } from 'fatcher';
 
-const cacheMap = new Map<string, { expireTime: number; response: Response }>();
+const store = new Map<string, { expireTime: number; response: Response }>();
+const pendingStore = new Map<string, { promise: Promise<Response> }>();
 
 export const cache: FatcherMiddleware = {
   name: 'fatcher-middleware-cache',
   use: async (context, next) => {
-    const { ttl = 0, flush } = context;
+    const { ttl, flush } = context;
 
-    const method = context.request.method.toUpperCase();
-
-    if (method !== 'GET') {
+    if (context.request.method.toUpperCase() !== 'GET') {
       return next();
     }
 
-    const cacheKey = `${method} ${context.request.url}`;
+    const cacheKey = `${context.request.url}`;
 
-    const hitCache = cacheMap.get(cacheKey);
+    let hitCache = store.get(cacheKey);
 
-    if (hitCache && !flush) {
-      const isValid = hitCache.expireTime > Date.now();
-      if (isValid) {
-        return hitCache.response;
+    if (flush || (hitCache && hitCache.expireTime < Date.now())) {
+      store.delete(cacheKey);
+      hitCache = undefined;
+    }
+
+    if (hitCache) {
+      return hitCache.response.clone();
+    }
+
+    if (typeof ttl !== 'number' || ttl <= 0) {
+      return next();
+    }
+
+    const pending = pendingStore.get(cacheKey);
+    if (pending) {
+      const response = await pending.promise;
+      return response.clone();
+    }
+
+    const promise = (async () => {
+      try {
+        const response = await next();
+        store.set(cacheKey, {
+          response: response.clone(),
+          expireTime: Date.now() + ttl,
+        });
+        return response;
+      } finally {
+        pendingStore.delete(cacheKey);
       }
-      cacheMap.delete(cacheKey);
-    }
+    })();
 
-    const response = await next();
+    pendingStore.set(cacheKey, { promise });
 
-    if (ttl > 0) {
-      const expireTime = Date.now() + ttl;
-      cacheMap.set(cacheKey, { response: response.clone(), expireTime });
-    }
-
-    return response;
+    const response = await promise;
+    return response.clone();
   },
 };

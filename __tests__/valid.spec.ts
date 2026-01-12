@@ -30,4 +30,44 @@ describe('Valid', () => {
 
     expect(result.responseTime === result1.responseTime).toBe(false);
   });
+
+  it('invalid Cached out of ttl', async () => {
+    const url = `https://foo.bar?id=${id++}`;
+    // @ts-expect-error
+    const response = await fatcher(url, { ttl: '1000', middlewares: [cache] });
+    const result = await response.json();
+
+    await delay(1000);
+
+    const response1 = await fatcher(url, { middlewares: [cache] });
+    const result1 = await response1.json();
+
+    expect(result.responseTime === result1.responseTime).toBe(false);
+  });
+
+  it('invalid Cached out of ttl', async () => {
+    const url = `https://foo.bar?id=${id++}`;
+    const response = await fatcher(url, { ttl: -1000, middlewares: [cache] });
+    const result = await response.json();
+
+    await delay(1000);
+
+    const response1 = await fatcher(url, { middlewares: [cache] });
+    const result1 = await response1.json();
+
+    expect(result.responseTime === result1.responseTime).toBe(false);
+  });
+
+  it('invalid Cached out of ttl', async () => {
+    const url = `https://foo.bar?id=${id++}`;
+    const response = await fatcher(url, { ttl: 0, middlewares: [cache] });
+    const result = await response.json();
+
+    await delay(1000);
+
+    const response1 = await fatcher(url, { middlewares: [cache] });
+    const result1 = await response1.json();
+
+    expect(result.responseTime === result1.responseTime).toBe(false);
+  });
 });

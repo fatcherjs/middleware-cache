@@ -53,4 +53,28 @@ describe('Basic', () => {
 
     expect(result.responseTime === result1.responseTime).toBe(false);
   });
+
+  it('Deduplicate concurrent requests and share the same promise', async () => {
+    const url = `https://foo.bar?id=${id++}`;
+
+    let hitCount = 0;
+
+    server.use(
+      http.all(url, async () => {
+        hitCount++;
+        await delay(1000);
+        return HttpResponse.json({ responseTime: Math.random() });
+      }),
+    );
+
+    const p1 = fatcher(url, { ttl: 2000, middlewares: [cache] });
+    const p2 = fatcher(url, { ttl: 2000, middlewares: [cache] });
+
+    const [r1, r2] = await Promise.all([p1, p2]);
+    const [j1, j2] = await Promise.all([r1.json(), r2.json()]);
+
+    expect(hitCount).toBe(1);
+
+    expect(j1.responseTime).toBe(j2.responseTime);
+  });
 });
