@@ -32,7 +32,25 @@
 ### CDN
 
 ```html
+<script src="https://cdn.jsdelivr.net/npm/fatcher/dist/fatcher.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fatcherjs/middleware-cache/dist/index.min.js"></script>
+
+<script>
+  Fatcher.fatcher('url', {
+    middlewares: [FatcherMiddlewareCache.cache],
+    ttl: 60 * 1000, // 60s
+  }).then(async response => {
+    const text = await response.text();
+
+    Fatcher.fatcher('url', {
+      middlewares: [FatcherMiddlewareCache.cache],
+    }).then(async response2 => {
+      const text2 = await response2.text();
+
+      console.log(text === text2); // true
+    });
+  });
+</script>
 ```
 
 ## Usage
@@ -58,6 +76,41 @@ fatcher('https://foo.bar', {
   ttl: 5 * 1000,
   middlewares: [cache],
 });
+```
+
+### flush
+
+```ts
+import { fatcher } from 'fatcher';
+import { cache } from '@fatcherjs/middleware-cache';
+
+fatcher('https://foo.bar', {
+  ttl: 5 * 1000,
+  middlewares: [cache],
+});
+
+fatcher('https://foo.bar', {
+  ttl: 5 * 1000,
+  flush: true, // ignore cache and refresh cache with ttl > 0
+  middlewares: [cache],
+});
+```
+
+## API
+
+### clearCache
+
+```ts
+import { fatcher } from 'fatcher';
+import { cache, clearCache } from '@fatcherjs/middleware-cache';
+
+fatcher('https://foo.bar', {
+  ttl: 5 * 1000,
+  middlewares: [cache],
+});
+
+clearCache('https://foo.bar'); // clear single cache
+clearCache(); // clear all cache
 ```
 
 ## License

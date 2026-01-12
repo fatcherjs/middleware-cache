@@ -1,6 +1,6 @@
 {
   "name": "@fatcherjs/middleware-cache",
-  "version": "3.0.0-alpha-11",
+  "version": "3.0.0",
   "homepage": "https://github.com/fatcherjs/middleware-cache",
   "repository": {
     "type": "git",
