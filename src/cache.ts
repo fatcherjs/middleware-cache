@@ -3,6 +3,17 @@ import { FatcherMiddleware } from 'fatcher';
 const store = new Map<string, { expireTime: number; response: Response }>();
 const pendingStore = new Map<string, { promise: Promise<Response> }>();
 
+export function clearCache(key?: string) {
+  if (key) {
+    store.delete(key);
+    pendingStore.delete(key);
+    return;
+  }
+
+  store.clear();
+  pendingStore.clear();
+}
+
 export const cache: FatcherMiddleware = {
   name: 'fatcher-middleware-cache',
   use: async (context, next) => {
@@ -12,12 +23,12 @@ export const cache: FatcherMiddleware = {
       return next();
     }
 
-    const cacheKey = `${context.request.url}`;
+    const key = context.request.url;
 
-    let hitCache = store.get(cacheKey);
+    let hitCache = store.get(key);
 
     if (flush || (hitCache && hitCache.expireTime < Date.now())) {
-      store.delete(cacheKey);
+      store.delete(key);
       hitCache = undefined;
     }
 
@@ -29,7 +40,7 @@ export const cache: FatcherMiddleware = {
       return next();
     }
 
-    const pending = pendingStore.get(cacheKey);
+    const pending = pendingStore.get(key);
     if (pending) {
       const response = await pending.promise;
       return response.clone();
@@ -38,17 +49,17 @@ export const cache: FatcherMiddleware = {
     const promise = (async () => {
       try {
         const response = await next();
-        store.set(cacheKey, {
+        store.set(key, {
           response: response.clone(),
           expireTime: Date.now() + ttl,
         });
         return response;
       } finally {
-        pendingStore.delete(cacheKey);
+        pendingStore.delete(key);
       }
     })();
 
-    pendingStore.set(cacheKey, { promise });
+    pendingStore.set(key, { promise });
 
     const response = await promise;
     return response.clone();
